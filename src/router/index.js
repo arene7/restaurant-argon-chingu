@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore"; // Import Firest
 import Dashboard from "../views/Dashboard.vue";
 import Tables from "../views/Tables.vue";
 import Reservations from "../views/Reservations.vue";
+import Orders from "../views/Orders.vue";
 import Billing from "../views/Billing.vue";
 import VirtualReality from "../views/VirtualReality.vue";
 import RTL from "../views/Rtl.vue";
@@ -30,6 +31,12 @@ const routes = [
     path: "/reservations",
     name: "Reservations",
     component: Reservations,
+    meta: { roles: ["Administrator",  "Receptionist", "Cashier"] }
+  },
+  {
+    path: "/orders",
+    name: "Orders",
+    component: Orders,
     meta: { roles: ["Administrator", "Cashier"] }
   },
   {

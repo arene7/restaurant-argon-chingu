@@ -34,17 +34,6 @@ const getRoute = () => {
         </sidenav-item>
       </li>
 
-      <li class="nav-item">
-        <sidenav-item
-          to="/tables"
-          :class="getRoute() === 'tables' ? 'active' : ''"
-          :navText="isRTL ? 'الجداول' : 'Tables'"
-        >
-          <template v-slot:icon>
-            <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
-          </template>
-        </sidenav-item>
-      </li>
 
       <li class="nav-item">
         <sidenav-item
@@ -60,6 +49,30 @@ const getRoute = () => {
 
       <li class="nav-item">
         <sidenav-item
+          to="/orders" 
+          :class="getRoute() === 'orders' ? 'active' : ''"  
+          :navText="isRTL ? 'الطلبات' : 'Orders'"  
+        >
+          <template v-slot:icon>
+            <i class="ni ni-basket text-success text-sm opacity-10"></i> <!-- Icono para Orders -->
+          </template>
+        </sidenav-item>
+      </li>
+
+      <li class="nav-item">
+        <sidenav-item
+          to="/tables"
+          :class="getRoute() === 'tables' ? 'active' : ''"
+          :navText="isRTL ? 'الجداول' : 'Tables'"
+        >
+          <template v-slot:icon>
+            <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
+          </template>
+        </sidenav-item>
+      </li>
+
+      <li class="nav-item">
+        <sidenav-item
           to="/billing"
           :class="getRoute() === 'billing' ? 'active' : ''"
           :navText="isRTL ? 'الفواتیر' : 'Billing'"
@@ -69,7 +82,6 @@ const getRoute = () => {
           </template>
         </sidenav-item>
       </li>
-
 
       <li class="nav-item">
         <sidenav-item
