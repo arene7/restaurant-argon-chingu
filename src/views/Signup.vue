@@ -1,52 +1,46 @@
 <script setup>
 import { ref, onBeforeUnmount, onBeforeMount } from "vue";
 import { useStore } from "vuex";
-import { getFirestore, setDoc, doc } from "firebase/firestore"; // Importa Firestore
-
+import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { useRouter } from "vue-router"; // Importar useRouter
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonCheckbox from "@/components/ArgonCheckbox.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const body = document.getElementsByTagName("body")[0];
 const store = useStore();
+const router = useRouter(); // Instanciar el router
 
-// Estados para el formulario
 const email = ref("");
 const password = ref("");
 const role = ref("");
 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
 const registerUser = async () => {
-  const auth = getAuth(); // Initialize Firebase Authentication
+  const auth = getAuth();
   try {
-    // Create user in Firebase Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
 
-    // Initialize Firestore
-    const db = getFirestore(); 
-
-    // User data to be saved in Firestore
+    const db = getFirestore();
     const userData = {
       email: email.value,
       role: role.value,
       createdAt: new Date()
     };
 
-    // Save user data in Firestore with user ID as document ID
     await setDoc(doc(db, "users", user.uid), userData);
-    alert("User registered successfully");
 
-    // Here you can add additional logic, such as redirecting the user or clearing the form
+    // Mostrar alerta y redirigir
+    alert("User registered successfully!");
+    router.push("/signin");
   } catch (error) {
     console.error("Error registering user:", error);
     alert("Registration failed: " + error.message);
   }
 };
-
 
 onBeforeMount(() => {
   store.state.hideConfigButton = true;
@@ -55,6 +49,7 @@ onBeforeMount(() => {
   store.state.showFooter = false;
   body.classList.remove("bg-gray-100");
 });
+
 onBeforeUnmount(() => {
   store.state.hideConfigButton = false;
   store.state.showNavbar = true;
@@ -140,7 +135,13 @@ onBeforeUnmount(() => {
                 </div>
                 <p class="text-sm mt-3 mb-0">
                   Already have an account?
-                  <a href="javascript:;" class="text-dark font-weight-bolder">Sign in</a>
+                  <a
+                    @click.prevent="router.push('/signin')"
+                    class="text-dark font-weight-bolder"
+                    style="cursor: pointer;"
+                  >
+                    Sign in
+                  </a>
                 </p>
               </form>
             </div>

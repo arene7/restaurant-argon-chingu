@@ -20,16 +20,32 @@ import TimelineItem from "@/examples/Cards/TimelineItem.vue";
 
 const orders = ref([]);
 
-// Fetch orders from Firebase Firestore
+// Fetch orders from Firebase Firestore and filter by today's date
 const fetchOrders = async () => {
     const db = getFirestore();
     const ordersRef = collection(db, 'orders');
     const querySnapshot = await getDocs(ordersRef);
-    orders.value = querySnapshot.docs.map(doc => {
-        const data = { id: doc.id, ...doc.data() };
-        console.log(data); // Verifica la estructura del objeto
-        return data;
-    });
+    
+    // Get today's date in local timezone, removing time information
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to midnight to compare only the date
+    
+    orders.value = querySnapshot.docs
+        .map(doc => {
+            const data = { id: doc.id, ...doc.data() };
+            if (data.createdAt) {
+                const orderDate = data.createdAt.toDate();
+                orderDate.setHours(0, 0, 0, 0);
+                // Compare the date part only to check if it's today
+                if (orderDate.getTime() === today.getTime()) {
+                    return data;
+                }
+            }
+            return null;
+        })
+        .filter(order => order !== null); // Filter out null entries
+    
+    console.log(orders.value); // Verify orders list
 };
 
 onMounted(fetchOrders);
