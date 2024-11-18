@@ -12,101 +12,172 @@
           required
         />
       </div>
-      <div class="mb-3">
-        <label for="date" class="form-label">Date</label>
-        <input
-          v-model="newReservation.date"
-          type="date"
-          class="form-control"
-          id="date"
-          :min="minDate"
-          required
-        />
+      <!-- Agrupando Date y Time en una fila -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="date" class="form-label">Date</label>
+          <input
+            v-model="newReservation.date"
+            type="date"
+            class="form-control"
+            id="date"
+            :min="minDate"
+            required
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="time" class="form-label">Time</label>
+          <select
+            v-model="newReservation.time"
+            class="form-control"
+            id="time"
+            required
+          >
+            <option disabled value="">Select a time slot</option>
+            <option
+              v-for="slot in timeSlots"
+              :key="slot"
+              :value="slot"
+            >{{ slot }}</option>
+          </select>
+        </div>
       </div>
       <div class="mb-3">
-        <label for="time" class="form-label">Time</label>
+        <label for="table" class="form-label">Table</label>
         <select
-          v-model="newReservation.time"
+          v-model="newReservation.table"
           class="form-control"
-          id="time"
+          id="table"
           required
         >
-          <option disabled value="">Select a time slot</option>
-          <option v-for="slot in timeSlots" :key="slot" :value="slot">{{ slot }}</option>
+          <option disabled value="">Select a table</option>
+          <option
+            v-for="table in availableTables"
+            :key="table.id"
+            :value="table.id"
+          >{{ `Table ${table.id}` }}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select
+          v-model="newReservation.status"
+          class="form-control"
+          id="status"
+          required
+        >
+          <option disabled value="">Select a status</option>
+          <option value="occupied">Occupied</option>
+          <option value="in progress">In Progress</option>
+          <option value="reserved">Reserved</option>
+          <option value="available">Available</option>
         </select>
       </div>
       <button type="submit" class="btn btn-primary">Add Reservation</button>
     </form>
   </div>
+
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { db } from "@/firebase"; // Ajusta la ruta si es necesario
+import { ref, onMounted } from "vue";
+import { db } from "@/firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-// Datos del nuevo registro
 const newReservation = ref({
   customerName: "",
   date: "",
   time: "",
-  table: "", // Campo para el número de mesa
+  table: "",
+  status: "" // New status field
 });
 
-// Variables auxiliares
-const minDate = new Date().toISOString().split("T")[0]; // Fecha mínima hoy
-const timeSlots = ref(["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00"]); // Definir horarios
-const tables = Array.from({ length: 10 }, (_, i) => ({ id: i + 1, occupied: false })); // Generar mesas
+const minDate = new Date().toISOString().split("T")[0];
+const timeSlots = ref([
+  "08:00 - 10:00",
+  "10:00 - 12:00",
+  "12:00 - 14:00",
+  "14:00 - 16:00",
+  "16:00 - 18:00",
+  "18:00 - 20:00",
+  "20:00 - 22:00"
+]);
 
-// Función para agregar una reserva con validación de disponibilidad
+const availableTables = ref([]);
+
+const fetchAvailableTables = async () => {
+  try {
+    const reservationsCollection = collection(db, "reservations");
+    const querySnapshot = await getDocs(reservationsCollection);
+    const existingReservations = querySnapshot.docs.map((doc) => doc.data());
+
+    const allTables = Array.from({ length: 10 }, (_, i) => ({
+      id: i + 1,
+      occupied: false
+    }));
+
+    allTables.forEach((table) => {
+      table.occupied = existingReservations.some(
+        (reservation) =>
+          reservation.table === table.id &&
+          reservation.date === newReservation.value.date &&
+          reservation.time === newReservation.value.time
+      );
+    });
+
+    availableTables.value = allTables.filter((table) => !table.occupied);
+  } catch (error) {
+    console.error("Error fetching available tables:", error);
+  }
+};
+
+onMounted(fetchAvailableTables);
+
 const addReservation = async () => {
-  if (newReservation.value.customerName && newReservation.value.date && newReservation.value.time) {
+  if (
+    newReservation.value.customerName &&
+    newReservation.value.date &&
+    newReservation.value.time &&
+    newReservation.value.table &&
+    newReservation.value.status
+  ) {
     try {
-      // Consultar reservas existentes en la base de datos
       const reservationsCollection = collection(db, "reservations");
       const querySnapshot = await getDocs(reservationsCollection);
-      const existingReservations = querySnapshot.docs.map(doc => doc.data());
+      const existingReservations = querySnapshot.docs.map((doc) => doc.data());
 
-      // Verificar disponibilidad de mesa para la fecha y hora
       const isTableOccupied = existingReservations.some(
-        reservation =>
+        (reservation) =>
           reservation.table === newReservation.value.table &&
           reservation.date === newReservation.value.date &&
           reservation.time === newReservation.value.time
       );
-
       if (isTableOccupied) {
-        alert(`The table ${newReservation.value.table} is already reserved at this date and time.`);
+        alert(
+          `The table ${newReservation.value.table} is already reserved at this date and time.`
+        );
         return;
       }
 
-      // Asignar una mesa disponible si no se especificó
-      const availableTable = tables.find(table => 
-        !table.occupied && !existingReservations.some(r => r.table === table.id)
-      );
-
-      if (!availableTable) {
-        alert("No tables available.");
-        return;
-      }
-
-      // Datos de la reserva
       const reservationData = {
         customerName: newReservation.value.customerName,
         date: newReservation.value.date,
         time: newReservation.value.time,
-        table: availableTable.id
+        table: newReservation.value.table,
+        status: newReservation.value.status
       };
 
-      // Agregar reserva a Firebase
       await addDoc(collection(db, "reservations"), reservationData);
-      alert(`Reservation added: ${newReservation.value.customerName} on ${newReservation.value.date} at ${newReservation.value.time}`);
+      alert(
+        `Reservation added: ${newReservation.value.customerName} on ${newReservation.value.date} at ${newReservation.value.time}`
+      );
 
-      // Marcar mesa como ocupada localmente y limpiar formulario
-      availableTable.occupied = true;
       newReservation.value.customerName = "";
       newReservation.value.date = "";
       newReservation.value.time = "";
+      newReservation.value.table = "";
+      newReservation.value.status = "";
+      fetchAvailableTables(); // Refresh available tables
     } catch (error) {
       console.error("Error adding reservation:", error);
       alert("Failed to add reservation. Please try again.");
@@ -118,5 +189,5 @@ const addReservation = async () => {
 </script>
 
 <style scoped>
-/* Estilos personalizados */
+/* Custom styles */
 </style>
