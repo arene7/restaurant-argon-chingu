@@ -18,8 +18,8 @@
             <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0">
               <div class="card card-plain">
                 <div class="pb-0 card-header text-start">
-                  <h4 class="font-weight-bolder">Sign In</h4>
-                  <p class="mb-0">Enter your email and password to sign in</p>
+                  <h4 class="font-weight-bolder">Iniciar sesión</h4>
+                  <p class="mb-0">Ingresa tu correo electrónico y contraseña para iniciar sesión</p>
                 </div>
                 <div class="card-body">
                   <form @submit.prevent="onSubmit" role="form">
@@ -27,7 +27,7 @@
                       <argon-input
                         id="email"
                         type="email"
-                        placeholder="Email"
+                        placeholder="Correo electrónico"
                         v-model="model.email"
                         size="lg"
                       />
@@ -36,13 +36,13 @@
                       <argon-input
                         id="password"
                         type="password"
-                        placeholder="Password"
+                        placeholder="Contraseña"
                         v-model="model.password"
                         size="lg"
                       />
                     </div>
                     <argon-switch id="rememberMe" name="remember-me">
-                      Remember me
+                      Recuérdame
                     </argon-switch>
                     <div class="text-center">
                       <argon-button
@@ -53,20 +53,20 @@
                         size="lg"
                         @click="onSubmit"
                       >
-                        Sign in
+                        Iniciar sesión
                       </argon-button>
                     </div>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
                   <p class="mx-auto mb-4 text-sm">
-                    Don't have an account?
+                    ¿No tienes una cuenta?
                     <a
                       href="javascript:;"
                       @click="goToSignup"
                       class="text-success text-gradient font-weight-bold"
                     >
-                      Sign up
+                      Regístrate
                     </a>
                   </p>
                 </div>
@@ -84,11 +84,10 @@
               >
                 <span class="mask bg-gradient-success opacity-6"></span>
                 <h4 class="mt-5 text-white font-weight-bolder position-relative">
-                  "Attention is the new currency"
+                  "La atención es la nueva moneda"
                 </h4>
                 <p class="text-white position-relative">
-                  The more effortless the writing looks, the more effort the
-                  writer actually put into the process.
+                  Cuanto más sencillo parece escribir, más esfuerzo ha puesto el escritor en el proceso.
                 </p>
               </div>
             </div>
@@ -102,17 +101,17 @@
 <script setup>
 import { onBeforeUnmount, onBeforeMount, reactive } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";  // import useRouter
+import { useRouter } from "vue-router";  // importar useRouter
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonSwitch from "@/components/ArgonSwitch.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/firebase";  // make sure your Firebase configuration is correctly imported
+import { auth } from "@/firebase";  // asegurarse de que la configuración de Firebase esté correctamente importada
 
 const body = document.getElementsByTagName("body")[0];
 const store = useStore();
-const router = useRouter();  // initialize the router
+const router = useRouter();  // inicializar el router
 
 const model = reactive({
   email: '',
@@ -139,17 +138,17 @@ const onSubmit = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, model.email, model.password);
     const user = userCredential.user;
-    console.log('User signed in:', user);
-    router.push('/dashboard-default');  // use router to navigate
+    console.log('Usuario iniciado sesión:', user);
+    router.push('/dashboard-default');  // usar el router para navegar
   } catch (error) {
-    console.error('Error signing in:', error.message);
-    alert('Login failed: ' + error.message);
+    console.error('Error al iniciar sesión:', error.message);
+    alert('Error de inicio de sesión: ' + error.message);
   }
 };
 
-// Navigate to signup page
+// Navegar a la página de registro
 const goToSignup = () => {
-  router.push('/signup');  // Navigate to /signup
+  router.push('/signup');  // Navegar a /signup
 };
 
 // eslint-disable-next-line no-unused-vars
@@ -161,11 +160,11 @@ const loginWithProvider = async (providerName) => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    console.log('User signed in with provider:', user);
-    router.push('/dashboard');  // use router to navigate
+    console.log('Usuario iniciado sesión con el proveedor:', user);
+    router.push('/dashboard');  // usar el router para navegar
   } catch (error) {
-    console.error('Error with provider login:', error.message);
-    alert('Login with provider failed: ' + error.message);
+    console.error('Error con el inicio de sesión con el proveedor:', error.message);
+    alert('Error al iniciar sesión con el proveedor: ' + error.message);
   }
 };
 </script>

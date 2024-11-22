@@ -34,11 +34,11 @@ const registerUser = async () => {
     await setDoc(doc(db, "users", user.uid), userData);
 
     // Mostrar alerta y redirigir
-    alert("User registered successfully!");
+    alert("¡Usuario registrado con éxito!");
     router.push("/signin");
   } catch (error) {
-    console.error("Error registering user:", error);
-    alert("Registration failed: " + error.message);
+    console.error("Error al registrar el usuario:", error);
+    alert("Registro fallido: " + error.message);
   }
 };
 
@@ -76,10 +76,9 @@ onBeforeUnmount(() => {
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-5 text-center mx-auto">
-            <h1 class="text-white mb-2 mt-5">Welcome!</h1>
+            <h1 class="text-white mb-2 mt-5">¡Bienvenido!</h1>
             <p class="text-lead text-white">
-              Use these awesome forms to login or create new account in your
-              project for free.
+              Utiliza este formulario impresionante para registrarte y comenzar a disfrutar de nuestra aplicación de forma gratuita.
             </p>
           </div>
         </div>
@@ -90,7 +89,7 @@ onBeforeUnmount(() => {
         <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
           <div class="card z-index-0">
             <div class="card-header text-center pt-4">
-              <h5>Register with</h5>
+              <h5>Registrarse con</h5>
             </div>
             <div class="card-body">
               <form @submit.prevent="registerUser">
@@ -98,30 +97,30 @@ onBeforeUnmount(() => {
                   v-model="email"
                   id="email"
                   type="email"
-                  placeholder="Email"
-                  aria-label="Email"
+                  placeholder="Correo electrónico"
+                  aria-label="Correo electrónico"
                 />
                 <argon-input
                   v-model="password"
                   id="password"
                   type="password"
-                  placeholder="Password"
-                  aria-label="Password"
+                  placeholder="Contraseña"
+                  aria-label="Contraseña"
                 />
                 <div class="form-group">
-                  <label for="role" class="form-label">Select Role:</label>
+                  <label for="role" class="form-label">Selecciona tu rol:</label>
                   <select v-model="role" class="form-select" required>
-                    <option value="" disabled selected>Select your role</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Cashier">Cashier</option>
-                    <option value="Receptionist">Receptionist</option>
-                    <option value="Waiter">Waiter</option>
+                    <option value="" disabled selected>Selecciona tu rol</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Cajero">Cajero</option>
+                    <option value="Recepcionista">Recepcionista</option>
+                    <option value="Mesero">Mesero</option>
                   </select>
                 </div>
                 <argon-checkbox checked>
                   <label class="form-check-label" for="flexCheckDefault">
-                    I agree to the
-                    <a href="javascript:;" class="text-dark font-weight-bolder">Terms and Conditions</a>
+                    Acepto los
+                    <a href="javascript:;" class="text-dark font-weight-bolder">Términos y Condiciones</a>
                   </label>
                 </argon-checkbox>
                 <div class="text-center">
@@ -130,17 +129,17 @@ onBeforeUnmount(() => {
                     color="dark"
                     variant="gradient"
                     class="my-4 mb-2"
-                    >Sign up</argon-button
+                    >Registrarse</argon-button
                   >
                 </div>
                 <p class="text-sm mt-3 mb-0">
-                  Already have an account?
+                  ¿Ya tienes una cuenta?
                   <a
                     @click.prevent="router.push('/signin')"
                     class="text-dark font-weight-bolder"
                     style="cursor: pointer;"
                   >
-                    Sign in
+                    Iniciar sesión
                   </a>
                 </p>
               </form>
