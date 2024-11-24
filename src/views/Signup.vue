@@ -28,6 +28,7 @@ const registerUser = async () => {
     const userData = {
       email: email.value,
       role: role.value,
+      status: 'off', // Añadir campo status por defecto
       createdAt: new Date()
     };
 
@@ -129,8 +130,10 @@ onBeforeUnmount(() => {
                     color="dark"
                     variant="gradient"
                     class="my-4 mb-2"
-                    >Registrarse</argon-button
+                    type="submit"
                   >
+                    Registrarse
+                  </argon-button>
                 </div>
                 <p class="text-sm mt-3 mb-0">
                   ¿Ya tienes una cuenta?

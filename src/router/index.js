@@ -11,7 +11,8 @@ import RTL from "../views/Rtl.vue";
 import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import Signin from "../views/Signin.vue";
-import ReservationsUsers from "../views/Reservation-users.vue"; // Importamos el nuevo componente público
+import ReservationsUsers from "../views/Reservation-users.vue"; // Componente público
+import Unauthorized from "../views/401.vue"; // Página 401
 
 // Estado global para el usuario autenticado
 import { ref } from "vue";
@@ -31,49 +32,49 @@ const routes = [
     path: "/dashboard-default",
     name: "Dashboard",
     component: Dashboard,
-    meta: { roles: ["Administrator", "Cashier", "Receptionist", "Waiter"] }
+    meta: { roles: ["Administrador", "Cajero", "Recepcionista", "Mesero"] },
   },
   {
     path: "/reservations",
     name: "Reservations",
     component: Reservations,
-    meta: { roles: ["Administrator", "Receptionist", "Cashier"] }
+    meta: { roles: ["Administrador", "Recepcionista", "Cajero"] },
   },
   {
     path: "/orders",
     name: "Orders",
     component: Orders,
-    meta: { roles: ["Administrator", "Cashier"] }
+    meta: { roles: ["Administrador", "Cajero"] },
   },
   {
     path: "/tables",
     name: "Tables",
     component: Tables,
-    meta: { roles: ["Administrator", "Cashier"] }
+    meta: { roles: ["Administrador", "Cajero"] },
   },
   {
     path: "/billing",
     name: "Billing",
     component: Billing,
-    meta: { roles: ["Administrator"] }
+    meta: { roles: ["Administrador"] },
   },
   {
     path: "/virtual-reality",
     name: "Virtual Reality",
     component: VirtualReality,
-    meta: { roles: ["Administrator"] }
+    meta: { roles: ["Administrador"] },
   },
   {
     path: "/rtl-page",
     name: "RTL",
     component: RTL,
-    meta: { roles: ["Administrator"] }
+    meta: { roles: ["Administrador"] },
   },
   {
     path: "/profile",
     name: "Profile",
     component: Profile,
-    meta: { roles: ["Administrator", "Cashier", "Receptionist", "Waiter"] }
+    meta: { roles: ["Administrador", "Cajero", "Recepcionista", "Mesero"] },
   },
   {
     path: "/signin",
@@ -86,10 +87,16 @@ const routes = [
     component: Signup,
   },
   {
-    path: "/reservations-users", // Nueva ruta pública
+    path: "/reservations-users",
     name: "ReservationsUsers",
     component: ReservationsUsers,
-    meta: { public: true }, // Indica que es una ruta pública
+    meta: { public: true },
+  },
+  {
+    path: "/401",
+    name: "Unauthorized",
+    component: Unauthorized,
+    meta: { public: true }, // Página pública
   },
 ];
 
@@ -105,54 +112,61 @@ const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser.value = user;
-    sessionStorage.setItem('currentUser', JSON.stringify(user)); // Guardar el usuario en sessionStorage
+    sessionStorage.setItem("currentUser", JSON.stringify(user)); // Guardar el usuario en sessionStorage
   } else {
     currentUser.value = null;
-    sessionStorage.removeItem('currentUser'); // Eliminar el usuario de sessionStorage
+    sessionStorage.removeItem("currentUser"); // Eliminar el usuario de sessionStorage
   }
 });
 
-// Función para obtener el rol del usuario desde Firestore
-async function getUserRole(uid) {
+// Función para obtener el rol y estado del usuario desde Firestore
+async function getUserRoleAndStatus(uid) {
   try {
     const userDoc = await getDoc(doc(db, "users", uid));
     if (userDoc.exists()) {
-      return userDoc.data().role;
+      return userDoc.data();
     } else {
       console.warn("El documento del usuario no existe para el UID:", uid);
-      throw new Error("El rol del usuario no se encontró");
+      throw new Error("El rol o estado del usuario no se encontró");
     }
   } catch (error) {
-    console.error("Error al obtener el rol del usuario:", error);
+    console.error("Error al obtener el rol o estado del usuario:", error);
     throw error;
   }
 }
 
-// Guard de navegación para control de acceso basado en roles
+// Guard de navegación para control de acceso basado en roles y estado
 router.beforeEach(async (to, from, next) => {
-  // Recuperar el estado del usuario de sessionStorage si está disponible
-  if (!currentUser.value && sessionStorage.getItem('currentUser')) {
-    currentUser.value = JSON.parse(sessionStorage.getItem('currentUser'));
+  // Recuperar el estado del usuario desde sessionStorage si está disponible
+  if (!currentUser.value && sessionStorage.getItem("currentUser")) {
+    currentUser.value = JSON.parse(sessionStorage.getItem("currentUser"));
   }
 
   if (to.meta.public) {
-    // Permitir acceso directo a rutas públicas
+    // Permitir acceso a rutas públicas
     return next();
   }
 
   if (currentUser.value) {
     try {
-      const role = await getUserRole(currentUser.value.uid);
+      const userData = await getUserRoleAndStatus(currentUser.value.uid);
+      const { role, status } = userData;
       const allowedRoles = to.meta.roles;
 
-      if (allowedRoles && !allowedRoles.includes(role)) {
-        // Redirigir a una ruta segura si el rol no está permitido
-        return next({ name: "Dashboard" });
+      if (status !== "on") {
+        console.warn("Acceso denegado: Usuario no autorizado.");
+        return next({ name: "Signin" }); // Redirigir al inicio de sesión
       }
-      next(); // Permitir navegación si el rol es válido
+
+      if (allowedRoles && !allowedRoles.includes(role)) {
+        console.warn("Acceso denegado: Rol no autorizado.");
+        return next({ name: "Unauthorized" }); // Redirigir a 401
+      }
+
+      return next(); // Permitir acceso si todo está correcto
     } catch (error) {
-      console.error("Error en el guard de navegación:", error);
-      return next({ name: "Signin" }); // Redirigir al inicio de sesión en caso de error
+      console.error("Error al validar usuario:", error);
+      return next({ name: "Signin" }); // Redirigir al inicio de sesión
     }
   } else {
     if (to.name === "Signin" || to.name === "Signup") {
@@ -161,6 +175,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Redirigir a inicio de sesión si el usuario no está autenticado
+    console.warn("Usuario no autenticado. Redirigiendo al inicio de sesión.");
     return next({ name: "Signin" });
   }
 });

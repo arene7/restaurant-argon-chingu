@@ -51,7 +51,6 @@
                         color="success"
                         fullWidth
                         size="lg"
-                        @click="onSubmit"
                       >
                         Iniciar sesión
                       </argon-button>

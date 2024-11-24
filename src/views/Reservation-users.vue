@@ -72,7 +72,6 @@
                         color="success"
                         fullWidth
                         size="lg"
-                        @click="createReservation"
                       >
                         Crear Reserva
                       </argon-button>

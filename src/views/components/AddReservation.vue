@@ -1,9 +1,9 @@
 <template>
   <div class="py-4 container-fluid">
-    <h6 class="mb-2">Add a Reservation</h6>
+    <h6 class="mb-2">Añadir Reserva</h6>
     <form @submit.prevent="addReservation">
       <div class="mb-3">
-        <label for="customerName" class="form-label">Customer Name</label>
+        <label for="customerName" class="form-label">Nombre del Cliente</label>
         <input
           v-model="newReservation.customerName"
           type="text"
@@ -12,10 +12,10 @@
           required
         />
       </div>
-      <!-- Agrupando Date y Time en una fila -->
+      <!-- Agrupando Fecha y Hora en una fila -->
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="date" class="form-label">Date</label>
+          <label for="date" class="form-label">Fecha</label>
           <input
             v-model="newReservation.date"
             type="date"
@@ -26,14 +26,14 @@
           />
         </div>
         <div class="col-md-6 mb-3">
-          <label for="time" class="form-label">Time</label>
+          <label for="time" class="form-label">Hora</label>
           <select
             v-model="newReservation.time"
             class="form-control"
             id="time"
             required
           >
-            <option disabled value="">Select a time slot</option>
+            <option disabled value="">Selecciona un horario</option>
             <option
               v-for="slot in timeSlots"
               :key="slot"
@@ -43,40 +43,38 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="table" class="form-label">Table</label>
+        <label for="table" class="form-label">Mesa</label>
         <select
           v-model="newReservation.table"
           class="form-control"
           id="table"
           required
         >
-          <option disabled value="">Select a table</option>
+          <option disabled value="">Selecciona una mesa</option>
           <option
             v-for="table in availableTables"
             :key="table.id"
             :value="table.id"
-          >{{ `Table ${table.id}` }}</option>
+          >{{ `Mesa ${table.id}` }}</option>
         </select>
       </div>
       <div class="mb-3">
-        <label for="status" class="form-label">Status</label>
+        <label for="status" class="form-label">Estado</label>
         <select
           v-model="newReservation.status"
           class="form-control"
           id="status"
           required
         >
-          <option disabled value="">Select a status</option>
-          <option value="occupied">Occupied</option>
-          <option value="in progress">In Progress</option>
-          <option value="reserved">Reserved</option>
-          <option value="available">Available</option>
+          <option disabled value="">Selecciona un estado</option>
+          <option value="In progress">En progreso</option>
+          <option value="Closed">Cerrada</option>
+          <option value="Reserved">Reservada</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary">Add Reservation</button>
+      <button type="submit" class="btn btn-primary">Añadir Reserva</button>
     </form>
   </div>
-
 </template>
 
 <script setup>
@@ -89,7 +87,7 @@ const newReservation = ref({
   date: "",
   time: "",
   table: "",
-  status: "" // New status field
+  status: "" // Manteniendo los estados originales en inglés
 });
 
 const minDate = new Date().toISOString().split("T")[0];
@@ -127,7 +125,7 @@ const fetchAvailableTables = async () => {
 
     availableTables.value = allTables.filter((table) => !table.occupied);
   } catch (error) {
-    console.error("Error fetching available tables:", error);
+    console.error("Error al obtener mesas disponibles:", error);
   }
 };
 
@@ -154,7 +152,7 @@ const addReservation = async () => {
       );
       if (isTableOccupied) {
         alert(
-          `The table ${newReservation.value.table} is already reserved at this date and time.`
+          `La mesa ${newReservation.value.table} ya está reservada para esta fecha y horario.`
         );
         return;
       }
@@ -169,7 +167,7 @@ const addReservation = async () => {
 
       await addDoc(collection(db, "reservations"), reservationData);
       alert(
-        `Reservation added: ${newReservation.value.customerName} on ${newReservation.value.date} at ${newReservation.value.time}`
+        `Reserva añadida: ${newReservation.value.customerName} el ${newReservation.value.date} a las ${newReservation.value.time}.`
       );
 
       newReservation.value.customerName = "";
@@ -177,17 +175,17 @@ const addReservation = async () => {
       newReservation.value.time = "";
       newReservation.value.table = "";
       newReservation.value.status = "";
-      fetchAvailableTables(); // Refresh available tables
+      fetchAvailableTables(); // Actualizar las mesas disponibles
     } catch (error) {
-      console.error("Error adding reservation:", error);
-      alert("Failed to add reservation. Please try again.");
+      console.error("Error al añadir la reserva:", error);
+      alert("No se pudo añadir la reserva. Por favor, inténtalo de nuevo.");
     }
   } else {
-    alert("Please fill in all fields.");
+    alert("Por favor, completa todos los campos.");
   }
 };
 </script>
 
 <style scoped>
-/* Custom styles */
+/* Estilos personalizados */
 </style>
