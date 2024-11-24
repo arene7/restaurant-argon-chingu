@@ -34,12 +34,11 @@ const getRoute = () => {
         </sidenav-item>
       </li>
 
-
       <li class="nav-item">
         <sidenav-item
           to="/reservations"  
           :class="getRoute() === 'reservations' ? 'active' : ''"
-          :navText="isRTL ? 'الحجوزات' : 'Reservations'" 
+          :navText="isRTL ? 'الحجوزات' : 'Reservas'" 
         >
           <template v-slot:icon>
             <i class="ni ni-basket text-info text-sm opacity-10"></i> <!-- Icon for Reservations -->
@@ -51,7 +50,7 @@ const getRoute = () => {
         <sidenav-item
           to="/orders" 
           :class="getRoute() === 'orders' ? 'active' : ''"  
-          :navText="isRTL ? 'الطلبات' : 'Orders'"  
+          :navText="isRTL ? 'الطلبات' : 'Pedidos'"  
         >
           <template v-slot:icon>
             <i class="ni ni-basket text-success text-sm opacity-10"></i> <!-- Icono para Orders -->
@@ -63,7 +62,7 @@ const getRoute = () => {
         <sidenav-item
           to="/tables"
           :class="getRoute() === 'tables' ? 'active' : ''"
-          :navText="isRTL ? 'الجداول' : 'Tables'"
+          :navText="isRTL ? 'الجداول' : 'Mesas'"
         >
           <template v-slot:icon>
             <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
@@ -75,7 +74,7 @@ const getRoute = () => {
         <sidenav-item
           to="/billing"
           :class="getRoute() === 'billing' ? 'active' : ''"
-          :navText="isRTL ? 'الفواتیر' : 'Billing'"
+          :navText="isRTL ? 'الفواتیر' : 'Facturación'"
         >
           <template v-slot:icon>
             <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
@@ -83,11 +82,11 @@ const getRoute = () => {
         </sidenav-item>
       </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <sidenav-item
           to="/virtual-reality"
           :class="getRoute() === 'virtual-reality' ? 'active' : ''"
-          :navText="isRTL ? 'الواقع الافتراضي' : 'Virtual Reality'"
+          :navText="isRTL ? 'الواقع الافتراضي' : 'Realidad Virtual'"
         >
           <template v-slot:icon>
             <i class="ni ni-app text-info text-sm opacity-10"></i>
@@ -105,7 +104,7 @@ const getRoute = () => {
             <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
 
       <li class="mt-3 nav-item">
         <h6
@@ -121,7 +120,7 @@ const getRoute = () => {
           class="text-xs ps-4 text-uppercase font-weight-bolder opacity-6"
           :class="isRTL ? 'me-4' : 'ms-2'"
         >
-          ACCOUNT PAGES
+          PÁGINAS DE CUENTA
         </h6>
       </li>
 
@@ -129,7 +128,7 @@ const getRoute = () => {
         <sidenav-item
           to="/profile"
           :class="getRoute() === 'profile' ? 'active' : ''"
-          :navText="isRTL ? 'حساب تعريفي' : 'Profile'"
+          :navText="isRTL ? 'حساب تعريفي' : 'Perfil'"
         >
           <template v-slot:icon>
             <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -137,11 +136,11 @@ const getRoute = () => {
         </sidenav-item>
       </li>
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <sidenav-item
           to="/signin"
           :class="getRoute() === 'signin' ? 'active' : ''"
-          :navText="isRTL ? 'تسجيل الدخول' : 'Sign In'"
+          :navText="isRTL ? 'تسجيل الدخول' : 'Iniciar Sesión'"
         >
           <template v-slot:icon>
             <i class="ni ni-single-copy-04 text-danger text-sm opacity-10"></i>
@@ -153,30 +152,30 @@ const getRoute = () => {
         <sidenav-item
           to="/signup"
           :class="getRoute() === 'signup' ? 'active' : ''"
-          :navText="isRTL ? 'اشتراك' : 'Sign Up'"
+          :navText="isRTL ? 'اشتراك' : 'Registrar'"
         >
           <template v-slot:icon>
             <i class="ni ni-collection text-info text-sm opacity-10"></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
     </ul>
   </div>
 
   <div class="pt-3 mx-3 mt-3 sidenav-footer">
     <sidenav-card
       :card="{
-        title: 'Need Help?',
-        description: 'Please check our docs',
+        title: '¿Necesitas ayuda?',
+        description: 'Por favor, revisa nuestra documentación',
         links: [
           {
-            label: 'Documentation',
+            label: 'Documentación',
             route:
               'https://www.creative-tim.com/learning-lab/vue/overview/argon-dashboard/',
             color: 'dark',
           },
           {
-            label: 'Buy now',
+            label: 'Comprar ahora',
             route:
               'https://www.creative-tim.com/product/vue-argon-dashboard-pro?ref=vadp',
             color: 'success',
