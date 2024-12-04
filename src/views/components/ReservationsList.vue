@@ -50,61 +50,62 @@
           </div>
         </div>
         <div class="table-responsive p-0">
-        <table class="table align-items-center mb-0">
-          <thead>
-            <tr>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre del Cliente</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Mesa</th>
-              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fecha</th>
-              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hora</th>
-              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Estado</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Verificar si hay datos -->
-            <tr v-if="filteredReservations.length === 0">
-              <td colspan="6" class="text-center">
-                <p class="text-sm font-weight-bold mb-0">No hay datos disponibles.</p>
-              </td>
-            </tr>
-            <!-- Mostrar reservaciones si existen -->
-            <tr v-for="reservation in filteredReservations" :key="reservation.id">
-              <td>
-                <div class="d-flex px-2">
-                  <div>
-                    <img :src="reservationImage" class="avatar avatar-sm rounded-circle me-2" alt="Avatar" />
+          <table class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre del Cliente</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Mesa</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fecha</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hora</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Estado</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Personas</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="filteredReservations.length === 0">
+                <td colspan="7" class="text-center">
+                  <p class="text-sm font-weight-bold mb-0">No hay datos disponibles.</p>
+                </td>
+              </tr>
+              <tr v-for="reservation in filteredReservations" :key="reservation.id">
+                <td>
+                  <div class="d-flex px-2">
+                    <div>
+                      <img :src="reservationImage" class="avatar avatar-sm rounded-circle me-2" alt="Avatar" />
+                    </div>
+                    <div class="my-auto">
+                      <h6 class="mb-0 text-sm">{{ reservation.customerName }}</h6>
+                    </div>
                   </div>
-                  <div class="my-auto">
-                    <h6 class="mb-0 text-sm">{{ reservation.customerName }}</h6>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p class="text-sm font-weight-bold mb-0">{{ reservation.table }}</p>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="text-secondary text-xs font-weight-bold">{{ reservation.date }}</span>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="text-secondary text-xs font-weight-bold">{{ reservation.time }}</span>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="text-secondary text-xs font-weight-bold">{{ reservation.status }}</span>
-              </td>
-              <td class="align-middle text-center">
-                <button class="btn btn-link text-secondary mb-0" @click="editReservation(reservation)">
-                  <i class="fa fa-edit text-xs" aria-hidden="true"></i> Editar
-                </button>
-                <button class="btn btn-link text-danger mb-0" @click="confirmDeleteReservation(reservation.id)">
-                  <i class="fa fa-trash text-xs" aria-hidden="true"></i> Eliminar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
+                </td>
+                <td>
+                  <p class="text-xs font-weight-bold mb-0">{{ reservation.table }}</p>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-secondary text-xs font-weight-bold">{{ reservation.date }}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-secondary text-xs font-weight-bold">{{ reservation.time }}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-secondary text-xs font-weight-bold">{{ reservation.status }}</span>
+                </td>
+                <td class="align-middle text-center text-sm">
+                  <span class="text-secondary text-xs font-weight-bold">{{ reservation.peopleCount }}</span>
+                </td>
+                <td class="align-middle text-center">
+                  <button class="btn btn-link text-secondary mb-0" @click="editReservation(reservation)">
+                    <i class="fa fa-edit text-xs" aria-hidden="true"></i> Editar
+                  </button>
+                  <button class="btn btn-link text-danger mb-0" @click="confirmDeleteReservation(reservation.id, reservation.email)">
+                    <i class="fa fa-trash text-xs" aria-hidden="true"></i> Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -119,8 +120,12 @@
           <div class="modal-body">
             <argon-input v-model="form.customerName" placeholder="Nombre del Cliente" size="sm" />
             <argon-input v-model="form.table" placeholder="Mesa (asignada automáticamente)" size="sm" disabled />
+            <argon-input v-model="form.peopleCount" placeholder="Personas" size="sm" type="number" disabled />
             <argon-input v-model="form.date" type="date" placeholder="Fecha" size="sm" />
-            <argon-input v-model="form.time" type="time" placeholder="Hora" size="sm" />
+            <select v-model="form.time" class="form-select mt-3" required>
+              <option value="" disabled>Seleccionar Hora</option>
+              <option v-for="slot in timeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
             <select v-model="form.status" class="form-select mt-3">
               <option value="">Seleccionar Estado</option>
               <option value="In progress">En progreso</option>
@@ -145,14 +150,11 @@
 </template>
 
 <script>
-import { db } from "@/firebase"; // Importa la configuración de Firebase
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import ArgonInput from "@/components/ArgonInput.vue";
+import { db } from "@/firebase";
+import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import emailjs from "emailjs-com";
 
 export default {
-  components: {
-    ArgonInput,
-  },
   data() {
     return {
       reservations: [],
@@ -164,25 +166,30 @@ export default {
         table: '',
         date: '',
         time: '',
-        status: ''
+        status: '',
+        peopleCount: 1,
+        email: '' 
       },
       filters: {
         customerName: '',
         table: '',
-        date: new Date().toISOString().split("T")[0], // Por defecto: fecha actual
+        date: new Date().toISOString().split("T")[0], 
         status: ''
-      }
+      },
+      timeSlots: [
+        "08:00 - 10:00",
+        "10:00 - 12:00",
+        "12:00 - 14:00",
+        "14:00 - 16:00",
+        "16:00 - 18:00",
+        "18:00 - 20:00",
+        "20:00 - 22:00"
+      ]
     };
   },
   computed: {
     filteredReservations() {
       return this.reservations.filter(reservation => {
-        // Mostrar las reservaciones de hoy si no se aplica otro filtro
-        if (this.filters.date === new Date().toISOString().split("T")[0]) {
-          return reservation.date === this.filters.date;
-        }
-
-        // Filtrar según los criterios seleccionados
         return Object.keys(this.filters).every(key => {
           return this.checkNull(reservation[key]).toLowerCase().includes(this.filters[key].toLowerCase());
         });
@@ -198,60 +205,75 @@ export default {
       this.reservations = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      })).filter(reservation => {
-        // Mostrar solo las reservaciones de hoy o las fechas futuras
-        const today = new Date().toISOString().split("T")[0];
-        return reservation.date >= today;
-      });
+      }));
     },
     async createReservation() {
       try {
-        const availableTable = await this.checkAvailability(this.form.date, this.form.time);
-
-        if (!availableTable) {
-          alert("No hay mesas disponibles en el intervalo de tiempo seleccionado.");
-          return;
-        }
-
-        this.form.table = availableTable;
-
-        await addDoc(collection(db, "reservations"), this.form);
-        await this.fetchReservations();
+        const docRef = await addDoc(collection(db, "reservations"), this.form);
+        console.log("Reserva creada con ID: ", docRef.id);
+        this.fetchReservations();
         this.resetForm();
         this.showAddReservationModal = false;
+
+        if (this.form.status === 'Reserved' || this.form.status === 'Closed') {
+          this.sendEmailNotification(this.form.customerName, this.form.status, this.form.email);
+        }
       } catch (error) {
-        console.error("Error creating reservation: ", error);
+        console.error("Error creando reserva: ", error);
       }
-    },
-    editReservation(reservation) {
-      this.editingReservation = reservation;
-      this.form = { ...reservation };
-      this.showAddReservationModal = true;
     },
     async updateReservation() {
       try {
         const reservationRef = doc(db, "reservations", this.editingReservation.id);
         await updateDoc(reservationRef, this.form);
         await this.fetchReservations();
-        this.resetForm();
         this.showAddReservationModal = false;
         this.editingReservation = null;
+
+        if (this.form.status === 'Reserved' || this.form.status === 'Closed') {
+          this.sendEmailNotification(this.form.customerName, this.form.status, this.form.email);
+          console.log("Correo de notificación enviado a:", this.form.email);
+        }
       } catch (error) {
-        console.error("Error updating reservation: ", error);
+        console.error("Error actualizando reserva: ", error);
       }
     },
-    async confirmDeleteReservation(id) {
-      if (confirm("¿Seguro que deseas eliminar esta reservación?")) {
-        await this.deleteReservation(id);
-      }
-    },
-    async deleteReservation(id) {
+    async deleteReservation(id, customerEmail) {
       try {
-        await deleteDoc(doc(db, "reservations", id));
-        await this.fetchReservations();
+        const reservationRef = doc(db, "reservations", id);
+        await deleteDoc(reservationRef);
+        console.log("Reserva eliminada con ID: ", id);
+        this.fetchReservations();
+
+        this.sendEmailNotification('Reserva eliminada', 'Cancelled', customerEmail);
       } catch (error) {
-        console.error("Error deleting reservation: ", error);
+        console.error("Error eliminando reserva: ", error);
       }
+    },
+    sendEmailNotification(customerName, status, customerEmail) {
+      const templateParams = {
+        customerName: customerName,
+        status: status,
+        to_email: customerEmail 
+      };
+
+      console.log("esres", templateParams);
+
+      emailjs.send('service_y28smfi', 'template_s6b7qho', templateParams, 'IgPMcQIU8WEdVUbJy')
+        .then(response => {
+          console.log('Email enviado correctamente:', response);
+        }, error => {
+          console.error('Error al enviar el correo:', error);
+        });
+    },
+    editReservation(reservation) {
+      this.editingReservation = reservation;
+      this.form = { ...reservation };
+      this.showAddReservationModal = true;
+    },
+    closeModal() {
+      this.showAddReservationModal = false;
+      this.resetForm();
     },
     resetForm() {
       this.form = {
@@ -259,18 +281,19 @@ export default {
         table: '',
         date: '',
         time: '',
-        status: ''
+        status: '',
+        peopleCount: 1,
+        email: '' 
       };
     },
-    closeModal() {
-      this.showAddReservationModal = false;
-      this.resetForm();
-      this.editingReservation = null;
-    },
+    confirmDeleteReservation(id, customerEmail) {
+      if (confirm("¿Estás seguro de que deseas eliminar esta reserva?")) {
+        this.deleteReservation(id, customerEmail);
+      }
+    }
   },
   mounted() {
     this.fetchReservations();
   }
 };
 </script>
-

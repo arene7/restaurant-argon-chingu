@@ -64,6 +64,18 @@
                         </option>
                       </select>
                     </div>
+                    <!-- Cantidad de Personas -->
+                    <div class="mb-3">
+                      <argon-input
+                        id="peopleCount"
+                        type="number"
+                        placeholder="Cantidad de Personas"
+                        v-model="reservation.peopleCount"
+                        size="lg"
+                        min="1"
+                        required
+                      />
+                    </div>
                     <!-- Botón Enviar -->
                     <div class="text-center">
                       <argon-button
@@ -103,6 +115,7 @@
     </section>
   </main>
 </template>
+
 
 <script setup>
 import { onBeforeUnmount, onBeforeMount, reactive, computed } from "vue";
