@@ -1,6 +1,9 @@
 <script setup>
 import BookTable from "./components/BookTable.vue";
 import ListOrders from "./components/ListOrders.vue";
+import InvoiceGenerator from "./components/InvoiceGenerator.vue";
+
+
 </script>
 
 <template>
@@ -10,19 +13,15 @@ import ListOrders from "./components/ListOrders.vue";
           <list-orders />
         </div>
       </div>
-      <div class="row mt-4">
+      <div class="row mt-4">   
         <div class="col-lg-7 mb-lg-0 mb-4">
           <div class="card">
-            <book-table />
+             <invoice-generator />
           </div>
         </div>
         <div class="col-lg-5 mb-4">
           <div class="card">
-            <div class="card-body">
-              <h6 class="card-title">Tables capacity</h6>
-              <p class="card-text">Status tables . ...</p>
-              <!-- <diamond-icons />  -->
-            </div>
+            <book-table />
           </div>
         </div>
       </div>

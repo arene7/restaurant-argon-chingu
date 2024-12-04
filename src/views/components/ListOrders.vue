@@ -134,6 +134,16 @@
                             </option>
                         </select>
                     </div>
+                    <div class="mt-3">
+                        <label for="orderName">Order Name:</label>
+                        <input
+                            id="orderName"
+                            v-model="orderName"
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter a name for this order"
+                        />
+                    </div>
                     <button class="btn btn-success mt-3" @click="saveOrder">Save Order</button>
                 </div>
             </div>
@@ -149,6 +159,7 @@ const menuItems = ref([]);
 const orders = ref([]);
 const reservations = ref([]);
 const selectedReservation = ref(null);
+const orderName = ref(''); // Nuevo campo para el nombre de la orden
 
 // Fetch menu items from Firebase Firestore
 const fetchMenuItems = async () => {
@@ -198,11 +209,12 @@ const total = computed(() => {
 
 // Save order function
 const saveOrder = async () => {
-    if (selectedReservation.value && orders.value.length > 0) {
+    if (selectedReservation.value && orders.value.length > 0 && orderName.value) {
         const db = getFirestore();
         try {
             const orderData = {
                 reservationId: selectedReservation.value,
+                orderName: orderName.value, // Nombre de la orden
                 items: orders.value.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
                 total: total.value,
                 createdAt: new Date()
@@ -211,11 +223,12 @@ const saveOrder = async () => {
             alert('Order saved successfully');
             // Clear orders after saving
             orders.value = [];
+            orderName.value = ''; // Limpiar el nombre de la orden después de guardarla
         } catch (error) {
             console.error('Error saving order: ', error);
         }
     } else {
-        alert('Please select a reservation and add items to the order.');
+        alert('Please select a reservation, add items to the order, and enter a name for the order.');
     }
 };
 </script>
