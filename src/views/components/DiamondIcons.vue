@@ -1,19 +1,40 @@
 <template>
   <div class="container">
     <h6 class="text-center mb-3">
-      Disponibilidad de mesas para el día presente y el intervalo de horas actual
+      Disponibilidad de mesas y sillas para el día presente en el intervalo de horas actual
     </h6>
     <div class="row justify-content-center">
       <div v-for="table in filteredTables" :key="table.id" class="col-auto table-container">
         <svg
-          width="30"
-          height="30"
-          :fill="table.occupied ? 'purple' : 'gray'"
+          width="60"
+          height="60"
+          :fill="table.occupied ? 'orange' : 'gray'"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
+          class="diamond-icon"
         >
           <polygon points="12,2 2,12 12,22 22,12" />
         </svg>
+        <div
+          class="capacity-circle"
+          :style="{
+            top: '5px',
+            left: '5px',
+            position: 'absolute',
+            width: '20px',
+            height: '20px',
+            backgroundColor: 'darkgray',
+            borderRadius: '50%',
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: '12px',
+            fontWeight: 'bold',
+          }"
+        >
+          {{ table.capacity }}
+        </div>
         <p class="text-center mt-1">{{ `Mesa ${table.id}` }}</p>
       </div>
     </div>
@@ -25,10 +46,17 @@ import { ref, computed, onMounted } from "vue";
 import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-const tables = ref(Array.from({ length: 10 }, (_, i) => ({ id: i + 1, occupied: false })));
+const tables = ref(
+  Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    occupied: false,
+    capacity: Math.floor(Math.random() * 6) + 2, // Capacidad entre 2 y 6 sillas
+  }))
+);
+
 const currentInterval = ref("");
 
-// Intervals definidos (ajústalos si es necesario)
+// Intervals definidos
 const timeIntervals = [
   { start: "08:00", end: "10:00" },
   { start: "10:00", end: "12:00" },
@@ -36,7 +64,7 @@ const timeIntervals = [
   { start: "14:00", end: "16:00" },
   { start: "16:00", end: "18:00" },
   { start: "18:00", end: "20:00" },
-  { start: "20:00", end: "22:00" }
+  { start: "20:00", end: "22:00" },
 ];
 
 const getCurrentInterval = () => {
@@ -95,7 +123,13 @@ onMounted(() => {
 
 <style scoped>
 .table-container {
-  margin: 10px;
-  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.diamond-icon {
+  margin-bottom: 10px;
 }
 </style>

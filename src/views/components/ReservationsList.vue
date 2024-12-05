@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div>
     <div class="card mb-4">
       <div class="card-header pb-0 d-flex justify-content-between align-items-center">
         <h6>Lista de Reservas</h6>
@@ -14,16 +15,6 @@
                 type="text"
                 placeholder="Filtrar por Nombre"
                 v-model="filters.customerName"
-                size="sm"
-              />
-            </div>
-            <div class="col-sm-2 mb-3">
-              <argon-input
-                id="table"
-                type="text"
-                placeholder="Filtrar por Mesa"
-                v-model="filters.table"
-                size="sm"
               />
             </div>
             <div class="col-sm-2 mb-3">
@@ -32,7 +23,6 @@
                 type="date"
                 placeholder="Filtrar por Fecha"
                 v-model="filters.date"
-                size="sm"
               />
             </div>
             <div class="col-sm-2 mb-3">
@@ -128,9 +118,42 @@
             </select>
             <select v-model="form.status" class="form-select mt-3">
               <option value="">Seleccionar Estado</option>
-              <option value="In progress">En progreso</option>
-              <option value="Closed">Cerrada</option>
               <option value="Reserved">Reservada</option>
+              <option value="Closed">Cerrada</option>
+              <option value="Standby time">En espera</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="saveReservation">{{ editingReservation ? 'Actualizar' : 'Crear' }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal para Crear/Editar -->
+    <div v-if="showAddReservationModal" class="modal d-block" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ editingReservation ? 'Editar Reserva' : 'Nueva Reserva' }}</h5>
+            <button type="button" class="btn-close" @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <argon-input v-model="form.customerName" placeholder="Nombre del Cliente" size="sm" />
+            <argon-input v-model="form.table" placeholder="Mesa (asignada automáticamente)" size="sm" disabled />
+            <argon-input v-model="form.peopleCount" placeholder="Personas" size="sm" type="number" disabled />
+            <argon-input v-model="form.date" type="date" placeholder="Fecha" size="sm" />
+            <select v-model="form.time" class="form-select mt-3" required>
+              <option value="" disabled>Seleccionar Hora</option>
+              <option v-for="slot in timeSlots" :key="slot" :value="slot">{{ slot }}</option>
+            </select>
+            <select v-model="form.status" class="form-select mt-3">
+              <option value="">Seleccionar Estado</option>
+              <option value="Reserved">Reservada</option>
+              <option value="Closed">Cerrada</option>
+              <option value="Standby time">En espera</option>
             </select>
           </div>
           <div class="modal-footer">
@@ -153,8 +176,12 @@
 import { db } from "@/firebase";
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import emailjs from "emailjs-com";
+import ArgonInput from '@/components/ArgonInput.vue'; 
 
 export default {
+  components: {
+    ArgonInput
+  },
   data() {
     return {
       reservations: [],
