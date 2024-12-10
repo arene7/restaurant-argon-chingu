@@ -3,58 +3,27 @@
     <div class="card-header pb-0 px-3 text-center">
       <ul class="nav nav-pills justify-content-center" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-          <a
-            class="nav-link active"
-            id="pills-main-courses-tab"
-            data-bs-toggle="pill"
-            href="#pills-main-courses"
-            role="tab"
-            aria-controls="pills-main-courses"
-            aria-selected="true"
-          >
-            Main Courses
+          <a class="nav-link active" id="pills-main-courses-tab" data-bs-toggle="pill" href="#pills-main-courses" role="tab" aria-controls="pills-main-courses" aria-selected="true">
+            Platos Principales
           </a>
         </li>
         <li class="nav-item" role="presentation">
-          <a
-            class="nav-link"
-            id="pills-appetizers-tab"
-            data-bs-toggle="pill"
-            href="#pills-appetizers"
-            role="tab"
-            aria-controls="pills-appetizers"
-            aria-selected="false"
-          >
-            Appetizers
+          <a class="nav-link" id="pills-appetizers-tab" data-bs-toggle="pill" href="#pills-appetizers" role="tab" aria-controls="pills-appetizers" aria-selected="false">
+            Aperitivos
           </a>
         </li>
         <li class="nav-item" role="presentation">
-          <a
-            class="nav-link"
-            id="pills-drinks-tab"
-            data-bs-toggle="pill"
-            href="#pills-drinks"
-            role="tab"
-            aria-controls="pills-drinks"
-            aria-selected="false"
-          >
-            Drinks
+          <a class="nav-link" id="pills-drinks-tab" data-bs-toggle="pill" href="#pills-drinks" role="tab" aria-controls="pills-drinks" aria-selected="false">
+            Bebidas
           </a>
         </li>
       </ul>
     </div>
     <div class="card-body pt-4 p-3">
       <div class="row">
-        <!-- Column for Menu Items -->
-        <div class="col-md-7">
+        <div :class="['col-md-7', { 'col-md-12': orders.length === 0 }]">
           <div class="tab-content" id="pills-tabContent">
-            <!-- Main Courses Tab -->
-            <div
-              class="tab-pane fade show active"
-              id="pills-main-courses"
-              role="tabpanel"
-              aria-labelledby="pills-main-courses-tab"
-            >
+            <div class="tab-pane fade show active" id="pills-main-courses" role="tabpanel" aria-labelledby="pills-main-courses-tab">
               <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12 mb-4" v-for="item in filteredMenuItems('Main course')" :key="item.id">
                   <div class="card h-100">
@@ -62,20 +31,14 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ item.name }}</h5>
                       <p class="card-text">{{ item.description }}</p>
-                      <p class="card-text"><strong>Price: </strong>${{ item.price }}</p>
-                      <button class="btn btn-primary" @click="addOrder(item)">Add Order</button>
+                      <p class="card-text"><strong>Precio: </strong>${{ item.price }}</p>
+                      <button class="btn btn-primary" @click="addOrder(item)">Agregar Orden</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Appetizers Tab -->
-            <div
-              class="tab-pane fade"
-              id="pills-appetizers"
-              role="tabpanel"
-              aria-labelledby="pills-appetizers-tab"
-            >
+            <div class="tab-pane fade" id="pills-appetizers" role="tabpanel" aria-labelledby="pills-appetizers-tab">
               <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12 mb-4" v-for="item in filteredMenuItems('Appetizer')" :key="item.id">
                   <div class="card h-100">
@@ -83,20 +46,14 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ item.name }}</h5>
                       <p class="card-text">{{ item.description }}</p>
-                      <p class="card-text"><strong>Price: </strong>${{ item.price }}</p>
-                      <button class="btn btn-primary" @click="addOrder(item)">Add Order</button>
+                      <p class="card-text"><strong>Precio: </strong>${{ item.price }}</p>
+                      <button class="btn btn-primary" @click="addOrder(item)">Agregar Orden</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Drinks Tab -->
-            <div
-              class="tab-pane fade"
-              id="pills-drinks"
-              role="tabpanel"
-              aria-labelledby="pills-drinks-tab"
-            >
+            <div class="tab-pane fade" id="pills-drinks" role="tabpanel" aria-labelledby="pills-drinks-tab">
               <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12 mb-4" v-for="item in filteredMenuItems('Drink')" :key="item.id">
                   <div class="card h-100">
@@ -104,8 +61,8 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ item.name }}</h5>
                       <p class="card-text">{{ item.description }}</p>
-                      <p class="card-text"><strong>Price: </strong>${{ item.price }}</p>
-                      <button class="btn btn-primary" @click="addOrder(item)">Add Order</button>
+                      <p class="card-text"><strong>Precio: </strong>${{ item.price }}</p>
+                      <button class="btn btn-primary" @click="addOrder(item)">Agregar Orden</button>
                     </div>
                   </div>
                 </div>
@@ -113,39 +70,31 @@
             </div>
           </div>
         </div>
-
-        <!-- Column for Order Summary -->
-        <div class="col-md-5">
-          <h5>Your Orders</h5>
+        <div class="col-md-5" v-if="orders.length > 0">
+          <h5>Tus Órdenes</h5>
           <ul class="list-group">
             <li class="list-group-item" v-for="(order, index) in orders" :key="index">
               {{ order.name }} - ${{ order.price }}
               <span v-if="order.quantity > 1"> (x{{ order.quantity }})</span>
-              <button class="btn btn-danger btn-sm float-end" @click="removeOrder(order)">Remove</button>
+              <button class="btn btn-danger btn-sm float-end" @click="removeOrder(order)">Eliminar</button>
             </li>
           </ul>
           <div class="mt-3">
             <strong>Total: ${{ total }}</strong>
           </div>
           <div class="mt-3">
-            <label for="reservationSelect">Select Reservation:</label>
+            <label for="reservationSelect">Seleccionar Reservación:</label>
             <select id="reservationSelect" v-model="selectedReservation" class="form-select">
               <option v-for="reservation in filteredReservations" :key="reservation.id" :value="reservation.id">
-                {{ reservation.customerName }} - Table: {{ reservation.table }} at {{ reservation.time }}
+                {{ reservation.customerName }} - Mesa: {{ reservation.table }} a las {{ reservation.time }}
               </option>
             </select>
           </div>
           <div class="mt-3">
-            <label for="orderName">Order Name:</label>
-            <input
-              id="orderName"
-              v-model="orderName"
-              type="text"
-              class="form-control"
-              placeholder="Enter a name for this order"
-            />
+            <label for="orderName">Nombre de la Orden:</label>
+            <input id="orderName" v-model="orderName" type="text" class="form-control" placeholder="Ingrese un nombre para esta orden" />
           </div>
-          <button class="btn btn-success mt-3" @click="saveOrder">Save Order</button>
+          <button class="btn btn-success mt-3" @click="saveOrder">Guardar Orden</button>
         </div>
       </div>
     </div>
@@ -160,7 +109,8 @@ const menuItems = ref([]);
 const orders = ref([]);
 const reservations = ref([]);
 const selectedReservation = ref(null);
-const orderName = ref(''); // Nuevo campo para el nombre de la orden
+const orderName = ref('');
+// const showAddProductModal = ref(false);
 
 // Fetch menu items from Firebase Firestore
 const fetchMenuItems = async () => {
@@ -188,33 +138,20 @@ const filteredMenuItems = (category) => {
   return menuItems.value.filter(item => item.category === category);
 };
 
-// Define time intervals
-const timeIntervals = [
-  "08:00 - 10:00", 
-  "10:00 - 12:00", 
-  "12:00 - 14:00", 
-  "14:00 - 16:00", 
-  "16:00 - 18:00", 
-  "18:00 - 20:00", 
-  "20:00 - 22:00"
-];
-
-// Filter reservations by time intervals
+// Filter reservations by status 'standby time'
 const filteredReservations = computed(() => {
-  return reservations.value.filter(reservation => {
-    return timeIntervals.includes(reservation.time);
-  });
+  return reservations.value.filter(reservation => reservation.status === 'standby time');
 });
 
 // Add order function
 const addOrder = (item) => {
   const existingOrder = orders.value.find(o => o.id === item.id);
   if (existingOrder) {
-    existingOrder.quantity += 1; // Increase quantity if the item already exists
+    existingOrder.quantity += 1;
   } else {
-    orders.value.push({ ...item, quantity: 1 }); // Add new order with quantity
+    orders.value.push({ ...item, quantity: 1 });
   }
-  console.log(`Added ${item.name} to the order.`);
+  console.log(`Añadido ${item.name} a la orden.`);
 };
 
 // Remove order function
@@ -234,42 +171,20 @@ const saveOrder = async () => {
     try {
       const orderData = {
         reservationId: selectedReservation.value,
-        orderName: orderName.value, // Nombre de la orden
+        orderName: orderName.value,
         items: orders.value.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
         total: total.value,
         createdAt: new Date()
       };
-      await addDoc(collection(db, 'orders'), orderData); // Save order to Firestore
-      alert('Order saved successfully');
-      // Clear orders after saving
+      await addDoc(collection(db, 'orders'), orderData);
+      alert('Orden guardada exitosamente');
       orders.value = [];
-      orderName.value = ''; // Limpiar el nombre de la orden después de guardarla
+      orderName.value = '';
     } catch (error) {
-      console.error('Error saving order: ', error);
+      console.error('Error guardando la orden: ', error);
     }
   } else {
-    alert('Please select a reservation, add items to the order, and enter a name for the order.');
+    alert('Por favor seleccione una reservación, añada artículos a la orden e ingrese un nombre para la orden.');
   }
 };
 </script>
-
-<style scoped>
-.card-img-top {
-  height: 150px; /* Ajusta la altura de las imágenes */
-  object-fit: cover; /* Mantiene la proporción de las imágenes */
-}
-
-.card-body {
-  padding: 15px; /* Reduce el espacio interior */
-}
-
-.col-md-7 {
-  flex: 0 0 58%;
-}
-
-.col-md-5 {
-  flex: 0 0 40%; /* Reduce el ancho de la columna "Your Orders" */
-  max-height: 600px; /* Limita la altura de la columna */
-  overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
-}
-</style>
