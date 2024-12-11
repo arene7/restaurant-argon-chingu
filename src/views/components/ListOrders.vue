@@ -97,13 +97,13 @@
           <div class="mt-3">
             <label for="reservationSelect">Seleccionar Reservación:</label>
             <select id="reservationSelect" v-model="selectedReservation" class="form-select" @change="updateAvailableChairs">
-              <option v-for="reservation in filteredReservations" :key="reservation.id" :value="reservation.id">
+              <option v-for="reservation in reservations" :key="reservation.id" :value="reservation.id">
                 {{ reservation.customerName }} - Mesa: {{ reservation.table }} a las {{ reservation.time }}
               </option>
             </select>
           </div>
 
-          <!-- Chair Selection -->
+          <!-- Chair Selection (updated with Select) -->
           <div class="mt-3" v-if="availableChairs.length > 0">
             <label for="chairSelection">Seleccionar Sillas:</label>
             <select id="chairSelection" v-model="selectedChairs" class="form-select" multiple>
@@ -137,15 +137,6 @@ const selectedReservation = ref(null);
 const selectedChairs = ref([]);
 const orderName = ref('');
 const availableChairs = ref([]);
-const timeSlots = ref([
-  "08:00 - 10:00",
-  "10:00 - 12:00",
-  "12:00 - 14:00",
-  "14:00 - 16:00",
-  "16:00 - 18:00",
-  "18:00 - 20:00",
-  "20:00 - 22:00",
-]);
 
 // Fetch menu items from Firebase Firestore
 const fetchMenuItems = async () => {
@@ -163,44 +154,10 @@ const fetchReservations = async () => {
   reservations.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// Get current time slot based on the current time
-const getCurrentTimeSlot = () => {
-  const now = new Date();
-  const currentTime = now.getHours() * 100 + now.getMinutes(); // Convert current time to HHMM format
-
-  return timeSlots.value.map(slot => {
-    const [start, end] = slot.split(' - ').map(time => {
-      const [hours, minutes] = time.split(':');
-      return parseInt(hours) * 100 + parseInt(minutes); // Convert to HHMM
-    });
-
-    return { start, end, slot };
-  }).find(({ start, end }) => currentTime >= start && currentTime <= end);
-};
-
-// Filter reservations by today's date and time slot
-const filterReservationsByTime = () => {
-  const currentTimeSlot = getCurrentTimeSlot();  // Hora actual
-  const today = new Date().toISOString().split('T')[0]; // Fecha de hoy en formato YYYY-MM-DD
-  
-  filteredReservations.value = reservations.value.filter(reservation => {
-    const reservationDate = reservation.date; // Fecha de la reserva en formato YYYY-MM-DD
-    const reservationTime = parseInt(reservation.time.replace(':', '').substring(0, 4)); // Hora de la reserva en HHMM (solo hora y minutos)
-
-    // Comparar si la reserva es para hoy y dentro del intervalo de tiempo actual
-    return reservationDate === today && reservationTime >= currentTimeSlot.start && reservationTime <= currentTimeSlot.end;
-  });
-};
-
 // Filter menu items by category
 const filteredMenuItems = (category) => {
   return menuItems.value.filter(item => item.category === category);
 };
-
-// Filter reservations with status 'standby time'
-const filteredReservations = computed(() => {
-  return reservations.value.filter(reservation => reservation.status === 'standby time');
-});
 
 // Update available chairs based on selected reservation
 const updateAvailableChairs = () => {
@@ -228,31 +185,34 @@ const removeOrder = (order) => {
   orders.value = orders.value.filter(o => o !== order);
 };
 
-// Save order to Firestore
 const saveOrder = async () => {
   if (!orderName.value || !selectedReservation.value) {
     alert('Por favor ingrese un nombre para la orden y seleccione una reservación.');
     return;
   }
-  
+
   const db = getFirestore();
   const ordersRef = collection(db, 'orders');
-  
+
   const newOrder = {
     name: orderName.value,
     reservationId: selectedReservation.value,
     chairs: selectedChairs.value,
-    total: total,
-    items: orders.value.map(order => ({ name: order.name, price: order.price, quantity: order.quantity })),
+    total: total.value,  // Aquí se usa total.value para obtener el valor real
+    items: orders.value.map(order => ({
+      name: order.name,
+      price: order.price,
+      quantity: order.quantity,
+    })),
   };
-  
+
   await addDoc(ordersRef, newOrder);
-  
-  // Clear order after saving
-  orders.value = [];
+
+  // Limpiar solo el nombre de la orden y las sillas seleccionadas, pero mantener las órdenes en la lista
   orderName.value = '';
   selectedChairs.value = [];
 };
+
 
 // Calculate total price of orders
 const total = computed(() => {
@@ -263,6 +223,5 @@ const total = computed(() => {
 onMounted(async () => {
   await fetchMenuItems();
   await fetchReservations();
-  filterReservationsByTime(); // Filter reservations based on current time
 });
 </script>
