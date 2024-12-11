@@ -3,25 +3,25 @@
     <div class="card-header pb-0 px-3 text-center">
       <ul class="nav nav-pills justify-content-center" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-          <a class="nav-link active" id="pills-main-courses-tab" data-bs-toggle="pill" href="#pills-main-courses" role="tab" aria-controls="pills-main-courses" aria-selected="true">
-            Platos Principales
+          <a class="nav-link" id="pills-main-courses-tab" data-bs-toggle="pill" href="#pills-main-courses" role="tab" aria-controls="pills-main-courses" aria-selected="true">
+            <i class="fas fa-utensils"></i> Platos Principales
           </a>
         </li>
         <li class="nav-item" role="presentation">
           <a class="nav-link" id="pills-appetizers-tab" data-bs-toggle="pill" href="#pills-appetizers" role="tab" aria-controls="pills-appetizers" aria-selected="false">
-            Aperitivos
+            <i class="fas fa-hamburger"></i> Aperitivos
           </a>
         </li>
         <li class="nav-item" role="presentation">
           <a class="nav-link" id="pills-drinks-tab" data-bs-toggle="pill" href="#pills-drinks" role="tab" aria-controls="pills-drinks" aria-selected="false">
-            Bebidas
+            <i class="fas fa-cocktail"></i> Bebidas
           </a>
         </li>
       </ul>
     </div>
     <div class="card-body pt-4 p-3">
       <div class="row">
-        <div :class="['col-md-7', { 'col-md-12': orders.length === 0 }]">
+        <div class="col-md-7">
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-main-courses" role="tabpanel" aria-labelledby="pills-main-courses-tab">
               <div class="row">
@@ -169,51 +169,45 @@ const updateAvailableChairs = () => {
 const addOrder = (item) => {
   const existingOrder = orders.value.find(o => o.id === item.id);
   if (existingOrder) {
-    existingOrder.quantity += 1;
+    existingOrder.quantity++;
   } else {
-    orders.value.push({ ...item, quantity: 1, selected: true });
+    orders.value.push({ ...item, quantity: 1 });
   }
-  console.log(`Añadido ${item.name} a la orden.`);
 };
 
 // Remove order function
 const removeOrder = (order) => {
-  orders.value = orders.value.filter(o => o.id !== order.id);
+  orders.value = orders.value.filter(o => o !== order);
 };
-
-// Calculate total price
-const total = computed(() => {
-  return orders.value.reduce((sum, order) => sum + (order.price * order.quantity), 0);
-});
 
 // Save order function
 const saveOrder = async () => {
-  if (selectedReservation.value && orders.value.length > 0 && orderName.value && selectedChairs.value.length > 0) {
-    const db = getFirestore();
-    try {
-      const orderData = {
-        reservationId: selectedReservation.value,
-        name: orderName.value,
-        chairs: selectedChairs.value,
-        items: orders.value,
-        total: total.value,
-      };
-      await addDoc(collection(db, 'orders'), orderData);
-      console.log('Orden guardada correctamente');
-      // Reset the form after saving
-      orders.value = [];
-      selectedReservation.value = null;
-      selectedChairs.value = [];
-      orderName.value = '';
-    } catch (error) {
-      console.error('Error al guardar la orden:', error);
-    }
-  } else {
-    alert('Por favor, complete todos los campos antes de guardar la orden.');
+  if (!orderName.value || !selectedReservation.value) {
+    alert('Por favor ingrese un nombre para la orden y seleccione una reservación.');
+    return;
   }
+  
+  const db = getFirestore();
+  const ordersRef = collection(db, 'orders');
+  
+  const newOrder = {
+    name: orderName.value,
+    reservationId: selectedReservation.value,
+    chairs: selectedChairs.value,
+    total: total,
+    items: orders.value.map(order => ({ name: order.name, price: order.price, quantity: order.quantity })),
+  };
+  
+  await addDoc(ordersRef, newOrder);
+  
+  // Clear order after saving
+  orders.value = [];
+  orderName.value = '';
+  selectedChairs.value = [];
 };
-</script>
 
-<style scoped>
-/* Puedes agregar estilos personalizados aquí */
-</style>
+// Calculate total price of orders
+const total = computed(() => {
+  return orders.value.reduce((sum, order) => sum + (order.price * order.quantity), 0);
+});
+</script>
