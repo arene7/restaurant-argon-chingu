@@ -74,8 +74,11 @@
           <h5>Tus Órdenes</h5>
           <ul class="list-group">
             <li class="list-group-item" v-for="(order, index) in orders" :key="index">
-              {{ order.name }} - ${{ order.price }}
-              <span v-if="order.quantity > 1"> (x{{ order.quantity }})</span>
+              <input type="checkbox" class="form-check-input me-2" :id="'order-' + index" v-model="order.selected" />
+              <label :for="'order-' + index">
+                {{ order.name }} - ${{ order.price }}
+                <span v-if="order.quantity > 1"> (x{{ order.quantity }})</span>
+              </label>
               <button class="btn btn-danger btn-sm float-end" @click="removeOrder(order)">Eliminar</button>
             </li>
           </ul>
@@ -84,9 +87,17 @@
           </div>
           <div class="mt-3">
             <label for="reservationSelect">Seleccionar Reservación:</label>
-            <select id="reservationSelect" v-model="selectedReservation" class="form-select">
+            <select id="reservationSelect" v-model="selectedReservation" class="form-select" @change="updateAvailableChairs">
               <option v-for="reservation in filteredReservations" :key="reservation.id" :value="reservation.id">
                 {{ reservation.customerName }} - Mesa: {{ reservation.table }} a las {{ reservation.time }}
+              </option>
+            </select>
+          </div>
+          <div class="mt-3" v-if="availableChairs.length > 0">
+            <label for="chairSelection">Seleccionar Sillas:</label>
+            <select id="chairSelection" v-model="selectedChairs" class="form-select" multiple>
+              <option v-for="chair in availableChairs" :key="chair" :value="chair">
+                Silla {{ chair }}
               </option>
             </select>
           </div>
@@ -109,8 +120,9 @@ const menuItems = ref([]);
 const orders = ref([]);
 const reservations = ref([]);
 const selectedReservation = ref(null);
+const selectedChairs = ref([]);
 const orderName = ref('');
-// const showAddProductModal = ref(false);
+const availableChairs = ref([]);
 
 // Fetch menu items from Firebase Firestore
 const fetchMenuItems = async () => {
@@ -143,13 +155,23 @@ const filteredReservations = computed(() => {
   return reservations.value.filter(reservation => reservation.status === 'standby time');
 });
 
+// Update available chairs based on the selected reservation
+const updateAvailableChairs = () => {
+  const reservation = reservations.value.find(res => res.id === selectedReservation.value);
+  if (reservation) {
+    availableChairs.value = Array.from({ length: reservation.chairCount }, (_, i) => i + 1);
+  } else {
+    availableChairs.value = [];
+  }
+};
+
 // Add order function
 const addOrder = (item) => {
   const existingOrder = orders.value.find(o => o.id === item.id);
   if (existingOrder) {
     existingOrder.quantity += 1;
   } else {
-    orders.value.push({ ...item, quantity: 1 });
+    orders.value.push({ ...item, quantity: 1, selected: true });
   }
   console.log(`Añadido ${item.name} a la orden.`);
 };
@@ -166,25 +188,32 @@ const total = computed(() => {
 
 // Save order function
 const saveOrder = async () => {
-  if (selectedReservation.value && orders.value.length > 0 && orderName.value) {
+  if (selectedReservation.value && orders.value.length > 0 && orderName.value && selectedChairs.value.length > 0) {
     const db = getFirestore();
     try {
       const orderData = {
         reservationId: selectedReservation.value,
-        orderName: orderName.value,
-        items: orders.value.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
+        name: orderName.value,
+        chairs: selectedChairs.value,
+        items: orders.value,
         total: total.value,
-        createdAt: new Date()
       };
       await addDoc(collection(db, 'orders'), orderData);
-      alert('Orden guardada exitosamente');
+      console.log('Orden guardada correctamente');
+      // Reset the form after saving
       orders.value = [];
+      selectedReservation.value = null;
+      selectedChairs.value = [];
       orderName.value = '';
     } catch (error) {
-      console.error('Error guardando la orden: ', error);
+      console.error('Error al guardar la orden:', error);
     }
   } else {
-    alert('Por favor seleccione una reservación, añada artículos a la orden e ingrese un nombre para la orden.');
+    alert('Por favor, complete todos los campos antes de guardar la orden.');
   }
 };
 </script>
+
+<style scoped>
+/* Puedes agregar estilos personalizados aquí */
+</style>

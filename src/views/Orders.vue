@@ -1,7 +1,7 @@
 <script setup>
-import BookTable from "./components/BookTable.vue";
+// import BookTable from "./components/BookTable.vue";
 import ListOrders from "./components/ListOrders.vue";
-import InvoiceGenerator from "./components/InvoiceGenerator.vue";
+// import InvoiceGenerator from "./components/InvoiceGenerator.vue";
 
 
 </script>
@@ -13,7 +13,7 @@ import InvoiceGenerator from "./components/InvoiceGenerator.vue";
           <list-orders />
         </div>
       </div>
-      <div class="row mt-4">   
+      <!-- <div class="row mt-4">   
         <div class="col-lg-7 mb-lg-0 mb-4">
           <div class="card">
              <invoice-generator />
@@ -24,7 +24,7 @@ import InvoiceGenerator from "./components/InvoiceGenerator.vue";
             <book-table />
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </template>
   

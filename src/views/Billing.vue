@@ -1,14 +1,14 @@
 <script setup>
-import MasterCard from "@/examples/Cards/MasterCard.vue";
-import DefaultInfoCard from "@/examples/Cards/DefaultInfoCard.vue";
-import PaymentCard from "./components/PaymentCard.vue";
-import InvoiceCard from "./components/InvoiceCard.vue";
+// import MasterCard from "@/examples/Cards/MasterCard.vue";
+// import DefaultInfoCard from "@/examples/Cards/DefaultInfoCard.vue";
+// import PaymentCard from "./components/PaymentCard.vue";
+// import InvoiceCard from "./components/InvoiceCard.vue";
 import BillingCard from "./components/BillingCard.vue";
 import TransactionCard from "./components/TransactionCard.vue";
 </script>
 <template>
   <div class="container-fluid">
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-lg-8">
         <div class="row mt-4">
           <div class="col-xl-6 mb-xl-0 mb-4">
@@ -48,7 +48,7 @@ import TransactionCard from "./components/TransactionCard.vue";
       <div class="col-lg-4">
         <invoice-card class="mt-4" />
       </div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="col-md-7">
         <billing-card />
