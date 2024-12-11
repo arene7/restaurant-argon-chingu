@@ -2,44 +2,45 @@
 import MiniStatisticsCard from "@/examples/Cards/MiniStatisticsCard.vue";
 import GradientLineChart from "@/examples/Charts/GradientLineChart.vue";
 import Carousel from "./components/Carousel.vue";
-import CategoriesList from "./components/CategoriesList.vue";
+// import CategoriesList from "./components/CategoriesList.vue";
 
-import US from "@/assets/img/icons/flags/US.png";
-import DE from "@/assets/img/icons/flags/DE.png";
-import GB from "@/assets/img/icons/flags/GB.png";
-import BR from "@/assets/img/icons/flags/BR.png";
+// import US from "@/assets/img/icons/flags/US.png";
+// import DE from "@/assets/img/icons/flags/DE.png";
+// import GB from "@/assets/img/icons/flags/GB.png";
+// import BR from "@/assets/img/icons/flags/BR.png";
 
-const sales = {
-  us: {
-    country: "United States",
-    sales: 2500,
-    value: "$230,900",
-    bounce: "29.9%",
-    flag: US,
-  },
-  germany: {
-    country: "Germany",
-    sales: "3.900",
-    value: "$440,000",
-    bounce: "40.22%",
-    flag: DE,
-  },
-  britain: {
-    country: "Great Britain",
-    sales: "1.400",
-    value: "$190,700",
-    bounce: "23.44%",
-    flag: GB,
-  },
-  brasil: {
-    country: "Brasil",
-    sales: "562",
-    value: "$143,960",
-    bounce: "32.14%",
-    flag: BR,
-  },
-};
+// const sales = {
+//   us: {
+//     country: "Estados Unidos",
+//     sales: 2500,
+//     value: "$230,900",
+//     bounce: "29.9%",
+//     flag: US,
+//   },
+//   germany: {
+//     country: "Alemania",
+//     sales: "3.900",
+//     value: "$440,000",
+//     bounce: "40.22%",
+//     flag: DE,
+//   },
+//   britain: {
+//     country: "Reino Unido",
+//     sales: "1.400",
+//     value: "$190,700",
+//     bounce: "23.44%",
+//     flag: GB,
+//   },
+//   brasil: {
+//     country: "Brasil",
+//     sales: "562",
+//     value: "$143,960",
+//     bounce: "32.14%",
+//     flag: BR,
+//   },
+// };
 </script>
+
 <template>
   <div class="py-4 container-fluid">
     <div class="row">
@@ -47,11 +48,11 @@ const sales = {
         <div class="row">
           <div class="col-lg-3 col-md-6 col-12">
             <mini-statistics-card
-              title="Today's Money"
+              title="Dinero de Hoy"
               value="$53,000"
               description="<span
                 class='text-sm font-weight-bolder text-success'
-                >+55%</span> since yesterday"
+                >+55%</span> desde hace una semana"
               :icon="{
                 component: 'ni ni-money-coins',
                 background: 'bg-gradient-primary',
@@ -61,11 +62,11 @@ const sales = {
           </div>
           <div class="col-lg-3 col-md-6 col-12">
             <mini-statistics-card
-              title="Today's Users"
+              title="Usuarios de Hoy"
               value="2,300"
               description="<span
                 class='text-sm font-weight-bolder text-success'
-                >+3%</span> since last week"
+                >+3%</span> desde la semana pasada"
               :icon="{
                 component: 'ni ni-world',
                 background: 'bg-gradient-danger',
@@ -75,11 +76,11 @@ const sales = {
           </div>
           <div class="col-lg-3 col-md-6 col-12">
             <mini-statistics-card
-              title="New Clients"
+              title="Nuevos Clientes"
               value="+3,462"
               description="<span
                 class='text-sm font-weight-bolder text-danger'
-                >-2%</span> since last quarter"
+                >-2%</span> desde el último trimestre"
               :icon="{
                 component: 'ni ni-paper-diploma',
                 background: 'bg-gradient-success',
@@ -89,11 +90,11 @@ const sales = {
           </div>
           <div class="col-lg-3 col-md-6 col-12">
             <mini-statistics-card
-              title="Sales"
+              title="Ventas"
               value="$103,430"
               description="<span
                 class='text-sm font-weight-bolder text-success'
-                >+5%</span> than last month"
+                >+5%</span> desde ;a última semana"
               :icon="{
                 component: 'ni ni-cart',
                 background: 'bg-gradient-warning',
@@ -104,28 +105,28 @@ const sales = {
         </div>
         <div class="row">
           <div class="col-lg-7 mb-lg">
-            <!-- line chart -->
+            <!-- gráfico de líneas -->
             <div class="card z-index-2">
               <gradient-line-chart
                 id="chart-line"
-                title="Sales Overview"
+                title="Resumen de Ventas"
                 description="<i class='fa fa-arrow-up text-success'></i>
-      <span class='font-weight-bold'>4% more</span> in 2021"
+      <span class='font-weight-bold'>4% más</span> en 2021"
                 :chart="{
                   labels: [
-                    'Apr',
+                    'Abr',
                     'May',
                     'Jun',
                     'Jul',
-                    'Aug',
+                    'Ago',
                     'Sep',
                     'Oct',
                     'Nov',
-                    'Dec',
+                    'Dic',
                   ],
                   datasets: [
                     {
-                      label: 'Mobile Apps',
+                      label: 'Aplicaciones Móviles',
                       data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
                     },
                   ],
@@ -138,11 +139,11 @@ const sales = {
           </div>
         </div>
         <div class="row mt-4">
-          <div class="col-lg-7 mb-lg-0 mb-4">
+          <!-- <div class="col-lg-7 mb-lg-0 mb-4">
             <div class="card">
               <div class="p-3 pb-0 card-header">
                 <div class="d-flex justify-content-between">
-                  <h6 class="mb-2">Sales by Country</h6>
+                  <h6 class="mb-2">Ventas por País</h6>
                 </div>
               </div>
               <div class="table-responsive">
@@ -152,11 +153,11 @@ const sales = {
                       <td class="w-30">
                         <div class="px-2 py-1 d-flex align-items-center">
                           <div>
-                            <img :src="sale.flag" alt="Country flag" />
+                            <img :src="sale.flag" alt="Bandera del país" />
                           </div>
                           <div class="ms-4">
                             <p class="mb-0 text-xs font-weight-bold">
-                              Country:
+                              País:
                             </p>
                             <h6 class="mb-0 text-sm">{{ sale.country }}</h6>
                           </div>
@@ -164,19 +165,19 @@ const sales = {
                       </td>
                       <td>
                         <div class="text-center">
-                          <p class="mb-0 text-xs font-weight-bold">Sales:</p>
+                          <p class="mb-0 text-xs font-weight-bold">Ventas:</p>
                           <h6 class="mb-0 text-sm">{{ sale.sales }}</h6>
                         </div>
                       </td>
                       <td>
                         <div class="text-center">
-                          <p class="mb-0 text-xs font-weight-bold">Value:</p>
+                          <p class="mb-0 text-xs font-weight-bold">Valor:</p>
                           <h6 class="mb-0 text-sm">{{ sale.value }}</h6>
                         </div>
                       </td>
                       <td class="text-sm align-middle">
                         <div class="text-center col">
-                          <p class="mb-0 text-xs font-weight-bold">Bounce:</p>
+                          <p class="mb-0 text-xs font-weight-bold">Rebote:</p>
                           <h6 class="mb-0 text-sm">{{ sale.bounce }}</h6>
                         </div>
                       </td>
@@ -185,8 +186,8 @@ const sales = {
                 </table>
               </div>
             </div>
-          </div>
-          <div class="col-lg-5">
+          </div> -->
+          <!-- <div class="col-lg-5">
             <categories-list
               :categories="[
                 {
@@ -194,30 +195,30 @@ const sales = {
                     component: 'ni ni-mobile-button',
                     background: 'dark',
                   },
-                  label: 'Devices',
-                  description: '250 in stock <strong>346+ sold</strong>',
+                  label: 'Dispositivos',
+                  description: '250 en stock <strong>346+ vendidos</strong>',
                 },
                 {
                   icon: {
                     component: 'ni ni-tag',
                     background: 'dark',
                   },
-                  label: 'Tickets',
-                  description: '123 closed <strong>15 open</strong>',
+                  label: 'Entradas',
+                  description: '123 cerradas <strong>15 abiertas</strong>',
                 },
                 {
                   icon: { component: 'ni ni-box-2', background: 'dark' },
-                  label: 'Error logs',
-                  description: '1 is active <strong>40 closed</strong>',
+                  label: 'Registros de Errores',
+                  description: '1 activo <strong>40 cerrados</strong>',
                 },
                 {
                   icon: { component: 'ni ni-satisfied', background: 'dark' },
-                  label: 'Happy Users',
+                  label: 'Usuarios Felices',
                   description: '+ 430',
                 },
               ]"
             />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

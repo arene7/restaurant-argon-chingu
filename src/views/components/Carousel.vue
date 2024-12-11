@@ -22,10 +22,9 @@
             >
               <i class="ni ni-camera-compact text-dark opacity-10"></i>
             </div>
-            <h5 class="text-white mb-1">Get started with Argon</h5>
+            <h5 class="text-white mb-1">Bienvenidos a Nuestro Restaurante</h5>
             <p>
-              There’s nothing I really wanted to do in life that I wasn’t able
-              to get good at.
+              Disfruta de una experiencia culinaria única con nuestros platillos exclusivos.
             </p>
           </div>
         </div>
@@ -45,10 +44,9 @@
             >
               <i class="ni ni-bulb-61 text-dark opacity-10"></i>
             </div>
-            <h5 class="text-white mb-1">Faster way to create web pages</h5>
+            <h5 class="text-white mb-1">Sabores Exquisitos</h5>
             <p>
-              That’s my skill. I’m not really specifically talented at anything
-              except for the ability to learn.
+              Cada plato es preparado con los ingredientes más frescos y de la más alta calidad.
             </p>
           </div>
         </div>
@@ -68,10 +66,9 @@
             >
               <i class="ni ni-trophy text-dark opacity-10"></i>
             </div>
-            <h5 class="text-white mb-1">Share with us your design tips!</h5>
+            <h5 class="text-white mb-1">Comparte tu Experiencia</h5>
             <p>
-              Don’t be afraid to be wrong because you can’t learn anything from
-              a compliment.
+              Déjanos saber tus comentarios y sugerencias para seguir mejorando.
             </p>
           </div>
         </div>
@@ -83,7 +80,7 @@
         data-bs-slide="prev"
       >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
+        <span class="visually-hidden">Anterior</span>
       </button>
       <button
         class="carousel-control-next w-5 me-3"
@@ -92,7 +89,7 @@
         data-bs-slide="next"
       >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
+        <span class="visually-hidden">Siguiente</span>
       </button>
     </div>
   </div>
