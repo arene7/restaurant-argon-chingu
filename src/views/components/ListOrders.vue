@@ -198,12 +198,13 @@ const saveOrder = async () => {
     name: orderName.value,
     reservationId: selectedReservation.value,
     chairs: selectedChairs.value,
-    total: total.value,  // Aquí se usa total.value para obtener el valor real
+    total: total.value,  // Total calculado
     items: orders.value.map(order => ({
       name: order.name,
       price: order.price,
       quantity: order.quantity,
     })),
+    status: "pendiente",  // Agregar el estado de la orden
   };
 
   await addDoc(ordersRef, newOrder);
