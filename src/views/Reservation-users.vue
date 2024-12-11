@@ -116,7 +116,6 @@
   </main>
 </template>
 
-
 <script setup>
 import { onBeforeUnmount, onBeforeMount, reactive, computed } from "vue";
 import { useStore } from "vuex";
@@ -136,6 +135,7 @@ const reservation = reactive({
   email: "",
   date: "",
   time: "",
+  peopleCount: 1,
 });
 
 // Get today's date to disable past dates
@@ -179,6 +179,7 @@ const createReservation = async () => {
       email: reservation.email,
       date: reservation.date,
       time: reservation.time,
+      peopleCount: reservation.peopleCount,
       table: null, // Asignar una mesa más adelante si es necesario
       status: "In progress", // Estado predeterminado
     });
@@ -189,6 +190,7 @@ const createReservation = async () => {
       customer_name: reservation.customerName,
       reservation_date: reservation.date,
       reservation_time: reservation.time,
+      people_count: reservation.peopleCount, // Enviar la cantidad de personas
     };
 
     emailjs.send("service_y28smfi", "template_bz23rbb", emailParams, "IgPMcQIU8WEdVUbJy")
@@ -199,7 +201,7 @@ const createReservation = async () => {
         console.error("Error al enviar el correo", error);
       });
 
-    alert("Reserva creada con éxito!");
+    alert("¡Reserva creada con éxito!");
 
   } catch (error) {
     console.error("Error al crear la reserva:", error);
