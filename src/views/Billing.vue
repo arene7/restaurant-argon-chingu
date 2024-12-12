@@ -4,7 +4,7 @@
 // import PaymentCard from "./components/PaymentCard.vue";
 // import InvoiceCard from "./components/InvoiceCard.vue";
 import BillingCard from "./components/BillingCard.vue";
-import TransactionCard from "./components/TransactionCard.vue";
+// import TransactionCard from "./components/TransactionCard.vue";
 </script>
 <template>
   <div class="container-fluid">
@@ -45,17 +45,17 @@ import TransactionCard from "./components/TransactionCard.vue";
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-4"> --
         <invoice-card class="mt-4" />
       </div>
     </div> -->
     <div class="row">
-      <div class="col-md-7">
+      <div>
         <billing-card />
       </div>
-      <div class="col-md-5">
+      <!-- <div class="col-md-5">
         <transaction-card />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

@@ -33,7 +33,7 @@
               <label for="reservationId" class="form-label">Reservación:</label>
               <select v-model="searchCriteria.reservation" id="reservationId" class="form-select">
                 <option v-for="reservation in reservations" :key="reservation.id" :value="reservation.id">
-                  {{ reservation.customerName }} - Mesa: {{ reservation.table }}
+                  {{ reservation.id }}
                 </option>
               </select>
             </div>

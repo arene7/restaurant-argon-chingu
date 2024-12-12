@@ -38,25 +38,25 @@ const routes = [
     path: "/reservations",
     name: "Reservations",
     component: Reservations,
-    meta: { roles: ["Administrador", "Recepcionista", "Cajero"] },
+    meta: { roles: ["Administrador", "Recepcionista"] },
   },
   {
     path: "/orders",
     name: "Orders",
     component: Orders,
-    meta: { roles: ["Administrador", "Cajero"] },
+    meta: { roles: ["Administrador", "Mesero"] },
   },
   {
     path: "/tables",
     name: "Tables",
     component: Tables,
-    meta: { roles: ["Administrador", "Cajero"] },
+    meta: { roles: ["Administrador", "Mesero"] },
   },
   {
     path: "/billing",
     name: "Billing",
     component: Billing,
-    meta: { roles: ["Administrador"] },
+    meta: { roles: ["Administrador", "cajero"] },
   },
   {
     path: "/virtual-reality",
@@ -74,7 +74,7 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
-    meta: { roles: ["Administrador", "Cajero", "Recepcionista", "Mesero"] },
+    meta: { roles: ["Administrador"] },
   },
   {
     path: "/signin",
